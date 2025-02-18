@@ -18,3 +18,8 @@ $ ./gradlew build
 $ java -jar build/libs/customers-1.0.0.jar
 ```
 
+## Run the tests
+```
+$ ./gradlew test
+```
+
