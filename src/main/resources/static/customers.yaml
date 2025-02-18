@@ -1,0 +1,114 @@
+openapi: "3.0.3"
+info:
+  title: Customers API
+  description: API for managing customers
+  version: 1.0.0
+servers:
+  - url: https://localhost:8080
+tags:
+  - name: Customer
+    description: Customer specific data.
+paths:
+  /v1/customers:
+    get:
+      tags:
+        - Customers
+      summary: Get all customers
+      operationId: getAllCustomers
+      responses:
+        "200":
+          description: List of customers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CustomerDto"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    post:
+      tags:
+        - Customers
+      summary: Create a new customer
+      operationId: createCustomer
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerDto'
+      responses:
+        '200':
+          description: Customer created
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/CustomerDto'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /v1/customer/{customerId}:
+    get:
+      tags:
+        - Customers
+      summary: Get customer by ID
+      operationId: getCustomer
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Customer details
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/CustomerDto'
+        '404':
+          description: Customer not found
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+components:
+  responses:
+    UnauthorizedError:
+      description: Authentication information is missing or invalid
+      headers:
+        WWW_Authenticate:
+          schema:
+            type: string
+  schemas:
+    CustomerDto:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - email
+        - phone
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        firstName:
+          type: string
+          maxLength: 30
+          description: First name of the customer
+        middleName:
+          type: string
+          nullable: true
+          maxLength: 30
+          description: Last name of the customer
+        lastName:
+          type: string
+          maxLength: 30
+          description: Last name of the customer
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+          minLength: 10
+          maxLength: 10
