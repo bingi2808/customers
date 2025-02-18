@@ -29,9 +29,15 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.4.2'
 	implementation 'org.springframework.boot:spring-boot-starter-validation:3.4.2'
 	implementation 'org.springframework.boot:spring-boot-starter-security:3.4.2'
+
+	implementation 'org.mapstruct:mapstruct:1.6.3'
+	implementation 'org.mapstruct:mapstruct-processor:1.6.3'
+	annotationProcessor "org.projectlombok:lombok-mapstruct-binding:0.2.0"
+
 	compileOnly 'org.projectlombok:lombok:1.18.34'
 	runtimeOnly 'com.mysql:mysql-connector-j:9.2.0'
 	annotationProcessor 'org.projectlombok:lombok:1.18.34'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test:3.4.2'
 	testImplementation 'org.springframework.security:spring-security-test:3.4.2'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.9.3'
@@ -57,4 +63,12 @@ openApiGenerate {
 
 tasks.named('compileJava') {
 	dependsOn 'openApiGenerate'
+}
+
+sourceSets {
+	main {
+		java {
+			srcDirs "$projectDir/generated/src/main/java"
+		}
+	}
 }
