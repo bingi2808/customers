@@ -23,6 +23,28 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public CustomerEntity updateCustomer(UUID id, CustomerEntity updatedCustomer) {
+        CustomerEntity existingCustomer = getCustomerById(id);
+
+        // Update only necessary fields
+        existingCustomer.setFirstName(updatedCustomer.getFirstName());
+        existingCustomer.setMiddleName(updatedCustomer.getMiddleName());
+        existingCustomer.setLastName(updatedCustomer.getLastName());
+        existingCustomer.setEmail(updatedCustomer.getEmail());
+        existingCustomer.setPhone(updatedCustomer.getPhone());
+
+        return customerRepository.save(existingCustomer);
+    }
+
+    @Override
+    public void deleteCustomer(UUID id) {
+        if (!customerRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Customer not found");
+        }
+        customerRepository.deleteById(id);
+    }
+
+    @Override
     public CustomerEntity createCustomer(CustomerEntity customerEntity) {
         if (customerRepository.findByEmail(customerEntity.getEmail()).isPresent()) {
             throw new IllegalArgumentException("Email already exists");

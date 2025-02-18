@@ -47,7 +47,7 @@ paths:
                 $ref: '#/components/schemas/CustomerDto'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-  /v1/customer/{customerId}:
+  /v1/customers/{customerId}:
     get:
       tags:
         - Customers
@@ -71,6 +71,55 @@ paths:
           description: Customer not found
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+    put:
+      tags:
+        - Customers
+      summary: Update customer by ID
+      operationId: updateCustomer
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CustomerDto"
+      responses:
+        '200':
+          description: Customer updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomerDto"
+        '404':
+          description: Customer not found
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    delete:
+      tags:
+        - Customers
+      summary: Delete customer by ID
+      operationId: deleteCustomer
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Customer deleted successfully
+        '404':
+          description: Customer not found
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
 components:
   responses:
     UnauthorizedError:

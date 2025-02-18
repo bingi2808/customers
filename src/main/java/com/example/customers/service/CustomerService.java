@@ -9,4 +9,6 @@ public interface CustomerService {
     CustomerEntity createCustomer(CustomerEntity customerEntity);
     CustomerEntity getCustomerById(UUID id);
     List<CustomerEntity> getAllCustomers();
+    CustomerEntity updateCustomer(UUID id, CustomerEntity customerEntity);
+    void deleteCustomer(UUID id);
 }

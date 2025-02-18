@@ -89,4 +89,31 @@ public class CustomerControllerTest {
         assertThat(response.getBody().getEmail()).isEqualTo("john.doe@example.com");
         verify(customerService, times(1)).getCustomerById(customerId);
     }
+
+    @Test
+    void testUpdateCustomer() {
+        // Given
+        when(customerMapper.toEntity(customerDto)).thenReturn(customerEntity);
+        when(customerService.updateCustomer(customerId, customerEntity)).thenReturn(customerEntity);
+        when(customerMapper.toDto(customerEntity)).thenReturn(customerDto);
+
+        // When
+        ResponseEntity<CustomerDto> response = customerController.updateCustomer(customerId, customerDto);
+
+        // Then
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getEmail()).isEqualTo("john.doe@example.com");
+        verify(customerService, times(1)).updateCustomer(customerId, customerEntity);
+    }
+
+    @Test
+    void testDeleteCustomer() {
+        // When
+        ResponseEntity<Void> response = customerController.deleteCustomer(customerId);
+
+        // Then
+        assertThat(response.getStatusCodeValue()).isEqualTo(204);
+        verify(customerService, times(1)).deleteCustomer(customerId);
+    }
+
 }

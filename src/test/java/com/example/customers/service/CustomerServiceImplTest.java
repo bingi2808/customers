@@ -100,4 +100,59 @@ public class CustomerServiceImplTest {
         assertThat(customers).hasSize(1);
         verify(customerRepository, times(1)).findAll();
     }
+
+    @Test
+    void testUpdateCustomer_CustomerExists() {
+        // Given
+        CustomerEntity updatedCustomer = EntityUtil.getCustomer();
+        updatedCustomer.setFirstName("Jane");
+        updatedCustomer.setLastName("Smith");
+
+        when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
+        when(customerRepository.save(any(CustomerEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // When
+        CustomerEntity result = customerService.updateCustomer(customerId, updatedCustomer);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result.getFirstName()).isEqualTo("Jane");
+        assertThat(result.getLastName()).isEqualTo("Smith");
+        verify(customerRepository, times(1)).save(any(CustomerEntity.class));
+    }
+
+    @Test
+    void testUpdateCustomer_CustomerNotFound() {
+        // Given
+        when(customerRepository.findById(customerId)).thenReturn(Optional.empty());
+
+        // When & Then
+        assertThrows(ResourceNotFoundException.class, () -> customerService.updateCustomer(customerId, customer));
+        verify(customerRepository, times(1)).findById(customerId);
+        verify(customerRepository, never()).save(any());
+    }
+
+    @Test
+    void testDeleteCustomer_CustomerExists() {
+        // Given
+        when(customerRepository.existsById(customerId)).thenReturn(true);
+        doNothing().when(customerRepository).deleteById(customerId);
+
+        // When
+        customerService.deleteCustomer(customerId);
+
+        // Then
+        verify(customerRepository, times(1)).deleteById(customerId);
+    }
+
+    @Test
+    void testDeleteCustomer_CustomerNotFound() {
+        // Given
+        when(customerRepository.existsById(customerId)).thenReturn(false);
+
+        // When & Then
+        assertThrows(ResourceNotFoundException.class, () -> customerService.deleteCustomer(customerId));
+        verify(customerRepository, times(1)).existsById(customerId);
+        verify(customerRepository, never()).deleteById(any());
+    }
 }

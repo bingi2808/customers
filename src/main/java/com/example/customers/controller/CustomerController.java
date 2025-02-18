@@ -46,4 +46,17 @@ public class CustomerController implements CustomersApi {
         CustomerEntity customer = customerService.getCustomerById(id);
         return ResponseEntity.ok(customerMapper.toDto(customer));
     }
+
+    @Override
+    public ResponseEntity<CustomerDto> updateCustomer(UUID customerId, CustomerDto customerDto) {
+        CustomerEntity updatedCustomer = customerService.updateCustomer(customerId, customerMapper.toEntity(customerDto));
+        return ResponseEntity.ok(customerMapper.toDto(updatedCustomer));
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteCustomer(UUID customerId) {
+        customerService.deleteCustomer(customerId);
+        return ResponseEntity.noContent().build();
+    }
+
 }
