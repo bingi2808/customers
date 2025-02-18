@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.4.2'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id "org.openapi.generator" version "7.11.0"
 }
 
 group = 'com.example'
@@ -36,4 +37,22 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+openApiGenerate {
+	generatorName = 'spring'
+	inputSpec = "$projectDir/src/main/resources/static/customers.yaml"
+	outputDir = "$projectDir/generated"
+	apiPackage = 'com.example.customers.api'
+	modelPackage = 'com.example.customers.model'
+	configOptions = [
+			dateLibrary: 'java8',
+			interfaceOnly: 'true',
+			useTags: 'true',
+			openApiNullable: 'false'
+	]
+}
+
+tasks.named('compileJava') {
+	dependsOn 'openApiGenerate'
 }
