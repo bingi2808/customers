@@ -33,8 +33,8 @@ public class CustomerServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        customerId = UUID.randomUUID();
         customer = EntityUtil.getCustomer();
+        customerId = customer.getId();
     }
 
     @Test
