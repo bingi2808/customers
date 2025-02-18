@@ -40,6 +40,7 @@ public class CustomerServiceImplTest {
     @Test
     void testCreateCustomer_Success() {
         // Given
+        when(customerRepository.findByEmail(customer.getEmail())).thenReturn(Optional.empty());
         when(customerRepository.save(customer)).thenReturn(customer);
 
         // When
@@ -49,6 +50,17 @@ public class CustomerServiceImplTest {
         assertThat(savedCustomer).isNotNull();
         assertThat(savedCustomer.getEmail()).isEqualTo("john.doe@example.com");
         verify(customerRepository, times(1)).save(customer);
+    }
+
+    @Test
+    void testCreateCustomer_EmailAlreadyExists() {
+        // Given
+        when(customerRepository.findByEmail(customer.getEmail())).thenReturn(Optional.of(customer));
+
+        // When & Then
+        assertThrows(IllegalArgumentException.class, () -> customerService.createCustomer(customer));
+        verify(customerRepository, times(1)).findByEmail(customer.getEmail());
+        verify(customerRepository, never()).save(any());
     }
 
     @Test
