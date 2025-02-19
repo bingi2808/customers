@@ -24,7 +24,14 @@ $ ./customer_api.sh
 4. Once the script starts, a prompt will made to choose which api call to make. Screenshot added for reference.
 ![img.png](img.png)
 
+5. To view the logs
+```
+# Application Logs
+$ docker exec -it customer_app_container tail -f  /var/logs/
 
+# Access Logs (Note: change the date to view the specific day file)
+$ docker exec -it customer_app tail -f /tomcat/logs/access_log.2025-02-18.log
+```
 
 ## Run the application for local development
 ### Pre-requisite: Run MySQL server using docker image

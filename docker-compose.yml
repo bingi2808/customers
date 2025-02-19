@@ -32,11 +32,16 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
     ports:
       - "8080:8080"
+    volumes:
+      - app_logs:/var/logs    # Mounts app logs
+      - tomcat_logs:/tomcat/logs  # Mounts Tomcat logs
     networks:
       - app_network
 
 volumes:
   mysql_data:
+  app_logs:
+  tomcat_logs:
 
 networks:
   app_network:
