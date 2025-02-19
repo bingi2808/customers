@@ -9,12 +9,20 @@ $ git clone git@github.com:bingi2808/customers.git
 
 
 ## Run the application
-1. Run the application using the docker-compose file.
+1. Go to the application folder.
+2. Run the application using the docker-compose command.
 ``` 
 $ docker-compose up -d 
 ```
 2. Application should be up and running in 8080 once containers are up.
-3. Use the runApplication.sh script to make api calls to the service.
+3. Use the customer_api.sh script to make api calls to the service.
+```
+$ ./customer_api.sh
+# Note: This script requires jq dependency.
+# $ brew install jq
+```
+4. Once the script starts, a prompt will made to choose which api call to make. Screenshot added for reference.
+![img.png](img.png)
 
 
 
