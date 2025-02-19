@@ -1,8 +1,26 @@
 # Customer CRUD Application
 
-## Pre-requisites
-1. Install MySQL and run in post 3306
-2. Reference - https://www.datacamp.com/tutorial/set-up-and-configure-mysql-in-docker
+## Pre-requisties
+1. Have docker installed. [Get Docker](https://docs.docker.com/get-started/get-docker/)
+2. Clone the customers application.
+```
+$ git clone git@github.com:bingi2808/customers.git
+```
+
+
+## Run the application
+1. Run the application using the docker-compose file.
+``` 
+$ docker-compose up -d 
+```
+2. Application should be up and running in 8080 once containers are up.
+3. Use the runApplication.sh script to make api calls to the service.
+
+
+
+## Run the application for local development
+### Pre-requisite: Run MySQL server using docker image
+This application uses external database MySQL. Install docker image for MySQL 9.2 and run in port 3306 by using the following steps.
 ```
 $ docker pull mysql:9.2
 $ docker run --name customers-mysql -e MYSQL_ROOT_PASSWORD=password -d mysql
@@ -10,13 +28,13 @@ $ docker exec -it customers-mysql bash
 $ mysql -u root -p
 $ CREATE DATABASE customer_db;
 ```
-
-## Run the application
-Make sure MySQL container is up and running.
+### Run the customers application
+1. Using command line to run the application. 
 ```
 $ ./gradlew build
-$ java -jar build/libs/customers-1.0.0.jar
+$ java -jar build/libs/customers-1.0.0.jar #Update the jar version by referring from build.gradle file.
 ```
+2. Open project in an IDE and run the CustomersApplication.java class.
 
 ## Run the tests
 ```
