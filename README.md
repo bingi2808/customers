@@ -47,9 +47,13 @@ $ CREATE DATABASE customer_db;
 1. Using command line to run the application. 
 ```
 $ ./gradlew build
-$ java -jar build/libs/customers-1.0.0.jar #Update the jar version by referring from build.gradle file.
+# In the following command, update the jar version by referring from build.gradle file.
+$ java -jar build/libs/customers-1.0.0.jar --spring.profiles.active=local
 ```
-2. Open project in an IDE and run the CustomersApplication.java class.
+2. Open project in an IDE and run the CustomersApplication.java class. Make sure set the following environment variable
+```
+SPRING_PROFILES_ACTIVE=local
+```
 
 ## Run the tests
 ```
