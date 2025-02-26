@@ -2,7 +2,7 @@ openapi: "3.0.3"
 info:
   title: Customers API
   description: API for managing customers
-  version: 1.0.0
+  version: 1.0.1
 servers:
   - url: https://localhost:8080
 tags:
@@ -31,7 +31,6 @@ paths:
         - Customers
       summary: Create a new customer
       operationId: createCustomer
-
       requestBody:
         required: true
         content:
@@ -69,6 +68,10 @@ paths:
                 $ref: '#/components/schemas/CustomerDto'
         '404':
           description: Customer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
     put:
@@ -98,6 +101,10 @@ paths:
                 $ref: "#/components/schemas/CustomerDto"
         '404':
           description: Customer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
     delete:
@@ -117,9 +124,12 @@ paths:
           description: Customer deleted successfully
         '404':
           description: Customer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-
 components:
   responses:
     UnauthorizedError:
@@ -161,3 +171,16 @@ components:
           type: string
           minLength: 10
           maxLength: 10
+    ProblemDetail:
+      type: object
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string

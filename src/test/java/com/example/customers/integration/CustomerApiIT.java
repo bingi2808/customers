@@ -1,19 +1,22 @@
 package com.example.customers.integration;
 
+import com.example.customers.model.CustomerDto;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.web.client.HttpClientErrorException;
-import org.testcontainers.containers.MySQLContainer;
-import com.example.customers.model.CustomerDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.*;
+import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
+import org.testcontainers.containers.MySQLContainer;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,6 +39,12 @@ public class CustomerApiIT {
     @BeforeEach
     void setUp() {
         baseUrl = "http://localhost:" + port + "/v1/customers";
+        restTemplate.setErrorHandler(new DefaultResponseErrorHandler() {
+            @Override
+            public void handleError(ClientHttpResponse response) throws IOException {
+                // Do nothing, let ResponseEntity handle non-2xx responses
+            }
+        });
     }
 
     @BeforeAll
@@ -60,6 +69,7 @@ public class CustomerApiIT {
         HttpHeaders headers = new HttpHeaders();
         headers.setBasicAuth("admin", "password"); // Set test credentials
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
         return headers;
     }
 
@@ -127,18 +137,17 @@ public class CustomerApiIT {
         // Create a customer first
         CustomerDto newCustomer = new CustomerDto("Bob", "Green", "bob.green@example.com", "6667778888");
         CustomerDto createdCustomer = createCustomer(newCustomer);
+        assertThat(createdCustomer).isNotNull();
+        assertThat(createdCustomer.getId()).isNotNull();
 
         // Delete the customer
         deleteCustomer(createdCustomer.getId());
 
         // Try to get the deleted customer (should return 404)
-        HttpEntity<Void> request = new HttpEntity<>(createHeaders());
-        try {
-            ResponseEntity<CustomerDto> response = restTemplate.exchange(
-                    baseUrl + "/" + createdCustomer.getId(), HttpMethod.GET, request, CustomerDto.class);
-        } catch (Exception ex) {
-            assertThat(ex instanceof HttpClientErrorException);
-        }
-//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND); // TODO: Need to fix exception handling
+        ResponseEntity<ProblemDetail> getResponseAfterDelete =
+                restTemplate.exchange(baseUrl + "/" + createdCustomer.getId(), HttpMethod.GET,
+                        new HttpEntity<>(createHeaders()), ProblemDetail.class);
+        assertThat(getResponseAfterDelete.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
+
 }
