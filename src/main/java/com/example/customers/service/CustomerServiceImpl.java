@@ -3,6 +3,7 @@ package com.example.customers.service;
 import com.example.customers.entity.CustomerEntity;
 import com.example.customers.exception.ResourceNotFoundException;
 import com.example.customers.repository.CustomerRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.findAll();
     }
 
+    @Transactional
     @Override
     public CustomerEntity updateCustomer(UUID id, CustomerEntity updatedCustomer) {
         CustomerEntity existingCustomer = getCustomerById(id);
@@ -36,6 +38,7 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.save(existingCustomer);
     }
 
+    @Transactional
     @Override
     public void deleteCustomer(UUID id) {
         if (!customerRepository.existsById(id)) {
@@ -44,6 +47,7 @@ public class CustomerServiceImpl implements CustomerService {
         customerRepository.deleteById(id);
     }
 
+    @Transactional
     @Override
     public CustomerEntity createCustomer(CustomerEntity customerEntity) {
         if (customerRepository.findByEmail(customerEntity.getEmail()).isPresent()) {
